@@ -49,7 +49,7 @@ This results in code that is a litle bit different, but arguably easier to write
 
 Puppet language in profile:
 
-```
+<pre code=puppet>
 class  profile::install{
        
         dsc_windowsfeature {'NetFramework45':
@@ -57,7 +57,7 @@ class  profile::install{
             dsc_ensure => 'present',
         }
 }        
-```
+</pre>
 
 As you can see every key and function used from Powershell DSC has a dsc_ in front of it.<br>
 If you are ever in doubt about a key you can look them up by checking the Puppet ruby translation for Powershell DSC :
