@@ -197,7 +197,7 @@ Included in the repo is the code used for a POC, it consists of:
 
 ## Authors
 
-* **Dennis Verdonschot** - *Initial work* - [<name>](https://github.com/<name>)
+* **Dennis Verdonschot** - *Initial work* - [dverdonschot](https://github.com/dverdonschot)
 
 ## License
 
