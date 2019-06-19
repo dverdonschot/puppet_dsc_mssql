@@ -27,7 +27,7 @@ With Powershell DSC you can use Powershell very similar to the way Puppet works.
 
 Powershell DSC:
 
-<pre code=powershell>
+```powershell
 Import-DscResource -ModuleName SqlServerDsc
 
 node localhost
@@ -38,7 +38,7 @@ node localhost
             Ensure = 'Present'
         }
 }
-</pre>
+```
 
 This script can be used to generate mof files and pull or push them to your servers.<br>
 This process is however kind of complicated and would eventually require a seperate DSC environment for Windows.
@@ -49,7 +49,7 @@ This results in code that is a litle bit different, but arguably easier to write
 
 Puppet language in profile:
 
-<pre code=puppet>
+```puppet
 class  profile::install{
        
         dsc_windowsfeature {'NetFramework45':
@@ -57,12 +57,12 @@ class  profile::install{
             dsc_ensure => 'present',
         }
 }        
-</pre>
+```
 
 As you can see every key and function used from Powershell DSC has a dsc_ in front of it.<br>
 If you are ever in doubt about a key you can look them up by checking the Puppet ruby translation for Powershell DSC :
 
-```
+```bash
 find / -name dsc_sqlsetup.rb | grep opt
   /opt/puppetlabs/puppet/cache/lib/puppet/type/dsc_sqlsetup.rb
 ```
@@ -79,7 +79,7 @@ Followed by a create resources that starts the function with the hieradata as in
 
 Puppet language in profile:
 
-```
+```puppet
 class profile::install{
 
         $windowsfeature = hiera('profile::install::dsc_windowsfeature', {})
@@ -89,7 +89,7 @@ class profile::install{
 
 Puppet hieradata <fdqn windows client>.yaml:
 
-```
+```yaml
 ---
 classes:
  - 'profile::install'
@@ -114,7 +114,7 @@ The functions will be windowsfeature, sqlsetup and sqlserverconfiguration
 
 Profile:
 
-```
+```puppet
 class profile::profile_mssql_setup::master {
 
         #install windows feature NetFramework45-core
@@ -135,7 +135,7 @@ class profile::profile_mssql_setup::master {
 
 Hieradata <fqdn windows client>.yaml:
 
-```
+```yaml
 ---
 classes:
  - 'profile::profile_mssql_setup::master'
