@@ -73,7 +73,7 @@ profiles::profile_mssql_setup::dsc_sqlsetup:
   installdefaultinstance:
     dsc_instancename: 'MSSQLSERVER'
     dsc_features: 'SQLENGINE'
-    dsc_sqlsysadminaccounts: 'CORP\sql-group'
+    dsc_sqlsysadminaccounts: '<DOMAIN>\sql-group'
     dsc_installshareddir: 'C:\MSSQL\'
     dsc_installsharedwowdir: 'C:\MSSQLWOW\'
     dsc_instancedir: 'C:\MSSQL\'
