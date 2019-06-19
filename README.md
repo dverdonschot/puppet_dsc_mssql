@@ -27,7 +27,7 @@ With Powershell DSC you can use Powershell very similar to the way Puppet works.
 
 Powershell DSC:
 
-```
+<pre code=powershell>
 Import-DscResource -ModuleName SqlServerDsc
 
 node localhost
@@ -38,8 +38,7 @@ node localhost
             Ensure = 'Present'
         }
 }
-
-```
+</pre>
 
 This script can be used to generate mof files and pull or push them to your servers.<br>
 This process is however kind of complicated and would eventually require a seperate DSC environment for Windows.
