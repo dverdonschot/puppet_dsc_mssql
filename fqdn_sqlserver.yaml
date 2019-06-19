@@ -1,0 +1,109 @@
+---
+classes:
+ - 'profile::profile_mssql_prereq::master'
+ - 'profile::profile_mssql_setup::master'
+
+#install required Windows Features
+profiles::profile_mssql_setup::dsc_windowsfeature:
+  netframework45:
+    dsc_name: 'NET-Framework-45-Core'
+    dsc_ensure: 'present'
+
+#disable dhcp on nic2
+profiles::profile_mssql_prereq::dsc_netipinterface:
+  disabledhcp:
+    dsc_interfacealias: 'Ethernet 2'
+    dsc_addressfamily: 'IPv4'
+    dsc_dhcp: 'Disabled'
+
+# configure nic2 with a static IP    
+profiles::profile_mssql_prereq::dsc_ipaddress:
+  newipv4address:
+    dsc_ipaddress: '192.168.0.245'
+    dsc_interfacealias: 'Ethernet 2'
+    dsc_addressfamily: 'IPv4'
+
+#create required folders (f.e. for mountpoints)
+profiles::profile_mssql_prereq::dsc_file:
+  sqldata:
+    dsc_ensure: 'present'
+    dsc_type: 'Directory'
+    dsc_destinationpath: 'c:\sqldata'
+  sqllog:
+    dsc_ensure: 'present'
+    dsc_type: 'Directory'
+    dsc_destinationpath: 'c:\sqllog'
+    
+#profiles::profile_mssql_prereq::downloadfile:
+  downloadsqliso:
+    url: 'http://<url>/SQLServer2017-x64-ENU-Dev.iso'
+    destination_directory: 'c:\temp\'
+
+#profiles::profile_mssql_prereq::dsc_mountimage:
+  ISO:
+    dsc_imagepath: 'c:\temp\SQLServer2017-x64-ENU-Dev.iso'
+    dsc_driveletter: 'E'
+
+
+# Create disks with mounpoint
+profiles::profile_mssql_prereq::dsc_diskaccesspath:
+  datavolume:
+    dsc_diskid: '1'
+    dsc_accesspath: 'c:\sqldata'
+#    dsc_size: '30'
+    dsc_fslabel: 'sqldata'
+  logvolume:
+    dsc_diskid: '2'
+    dsc_accesspath: 'c:\sqllog'
+#    dsc_size: '30'
+    dsc_fslabel: 'sqllog'
+
+#add accounts to local groups
+profiles::profile_mssql_setup::dsc_group:
+  addadusertolocaladmingroup:
+    dsc_groupname: 'Administrators'
+    dsc_ensure: 'Present'
+    dsc_memberstoinclude: '<DOMAIN>\<group>'
+    dsc_credential:
+      user: '<DOMAIN>\<USER>'
+      password: 'password'
+
+#MSSQL Setup configuration
+profiles::profile_mssql_setup::dsc_sqlsetup:
+  installdefaultinstance:
+    dsc_instancename: 'MSSQLSERVER'
+    dsc_features: 'SQLENGINE'
+    dsc_sqlsysadminaccounts: 'CORP\sql-group'
+    dsc_installshareddir: 'C:\MSSQL\'
+    dsc_installsharedwowdir: 'C:\MSSQLWOW\'
+    dsc_instancedir: 'C:\MSSQL\'
+    dsc_installsqldatadir: 'C:\MSSQL\MSSQL13.MSSQLSERVER\MSSQL\Data'
+    dsc_sqluserdbdir: 'C:\MSSQL\MSSQL13.MSSQLSERVER\MSSQL\Data'
+    dsc_sqluserdblogdir: 'C:\MSSQL\MSSQL13.MSSQLSERVER\MSSQL\Data'
+    dsc_sqltempdbdir: 'C:\MSSQL\MSSQL13.MSSQLSERVER\MSSQL\Data'
+    dsc_sqltempdblogdir: 'C:\MSSQL\MSSQL13.MSSQLSERVER\MSSQL\Data'
+    dsc_sqlbackupdir: 'C:\MSSQL\MSSQL13.MSSQLSERVER\MSSQL\Backup'
+    dsc_asservermode: 'MULTIDIMENSIONAL'
+    dsc_asconfigdir: 'C:\MSOLAP\Config'
+    dsc_aslogdir: 'C:\MSOLAP\Log'
+    dsc_asbackupdir: 'C:\MSOLAP\Backup'
+    dsc_astempdir: 'C:\MSOLAP\Temp'
+    dsc_sourcepath: '\\<fqdn share>\Installmedia\SQL2019RTM'
+    dsc_updateenabled: 'False'
+    dsc_forcereboot: 'False'
+    dsc_sqltempdbfilecount: '4'
+    dsc_sqltempdbfilesize: '1024'
+    dsc_sqltempdbfilegrowth: '512'
+    dsc_sqltempdblogfilesize: '1024'
+    dsc_sqltempdblogfilegrowth: '512'
+    #dsc_productkey: ''
+
+#SQL server configuration parameters
+profiles::profile_mssql_setup::dsc_sqlserverconfiguration:
+  filestream_access_level:
+    dsc_servername: 'localhost'
+    dsc_instancename: 'MSSQLSERVER'
+    dsc_optionname: 'filestream access level'
+    dsc_optionvalue: '0'
+    dsc_restartservice: 'False'
+
